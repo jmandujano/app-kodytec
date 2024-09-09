@@ -1,6 +1,5 @@
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
 
 app = FastAPI()
 
@@ -13,34 +12,39 @@ app.add_middleware(
     allow_headers=["*"],  # Permite todos los encabezados
 )
 
-#Datos de usuarios
-usuarios={
-    "admin":"clave1234",
-    "Joel":"clave5678",
-    "Diego":"clave9876"
+# Datos de alumnos
+alumnos = {
+    'C1': {'clave': 'password123', 'nombre': 'Renzo', 'apellido': 'Santillán'},
+    'C2': {'clave': 'securePass456', 'nombre': 'Julio', 'apellido': 'Mandujano'},
+    'C3': {'clave': 'password789', 'nombre': 'Joel', 'apellido': 'Campos'}
 }
 
-
-
-#Definir funcion de inicio de sesion
+# Definir función de inicio de sesión
 @app.post("/login/")
-def login(usuario, clave):
-  #mensaje="Bienvenido"
-  if usuario in usuarios:
-    mensaje="usuario correcto"
-    if len(clave)>=8:
-      mensaje="clave correcta"
-      if clave==usuarios[usuario]:
-        mensaje=f"Inicio de sesion exitoso. Bienvenido {usuario}"
-      else:
-        mensaje="clave incorrecta"
+def login(usuario: str, clave: str):
+    if usuario in alumnos:        
+        if clave == alumnos[usuario]['clave']:
+            return {
+                "is_success": True,
+                "message": f"Bienvenido {alumnos[usuario]['nombre']}",
+                "data": [
+                    {
+                        "nombre": alumnos[usuario]['nombre'],
+                        "apellido": alumnos[usuario]['apellido']
+                    }
+                ]
+            }
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Clave incorrecta"
+            )        
     else:
-      mensaje="clave incorrecta, debe tener al menos 8 caracteres"
-  else:
-    mensaje="usuario no encontrado"
-  return mensaje
-#Programa principal
-print(login("admin","clave1234"))
-print(login("Diego","clave9876"))
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Usuario no encontrado"
+        )
 
-
+# Programa principal para pruebas
+print(login(usuario="C1", clave="password123"))
+print(login(usuario="C3", clave="password789"))
