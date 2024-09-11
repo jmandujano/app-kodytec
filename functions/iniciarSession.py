@@ -1,23 +1,20 @@
-def iniciarSesion(usuario: str, clave: str):
-    if usuario in alumnos:        
-        if clave == alumnos[usuario]['clave']:
-            return {
-                "is_success": True,
-                "message": f"Bienvenido {alumnos[usuario]['nombre']}",
-                "data": [
-                    {
-                        "nombre": alumnos[usuario]['nombre'],
-                        "apellido": alumnos[usuario]['apellido']
-                    }
-                ]
-            }
+from database import alumnos
+
+def iniciarSesion(codigo: str, clave: str) -> str:
+    if codigo in alumnos:
+        if len(clave) >= 8:
+            if clave == alumnos[codigo]['clave']:
+                return f"Inicio de sesión exitoso. Bienvenido {alumnos[codigo]['nombre']} {alumnos[codigo]['apellido']}"
+            else:
+                return "Clave incorrecta"
         else:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Clave incorrecta"
-            )        
+            return "Clave incorrecta"
     else:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Usuario no encontrado"
-        )
+        return "Usuario no encontrado"
+
+# Casos de prueba
+print(iniciarSesion('C1', 'password123'))  # "Inicio de sesión exitoso. Bienvenido Renzo Santillán"
+print(iniciarSesion('C2', 'wrongPass'))    # "Clave incorrecta"
+print(iniciarSesion('C3', 'pass'))         # "Clave incorrecta"
+print(iniciarSesion('C4', 'anyPassword'))  # "Usuario no encontrado"
+print(iniciarSesion('C1', 'password'))     # "Clave incorrecta"
