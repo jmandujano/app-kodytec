@@ -3,8 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse  # Importar JSONResponse
 from database import alumnos  # Importar el diccionario alumnos
 from functions.iniciarSesion import iniciarSesion  # Asegúrate de que el nombre del archivo y la importación sean correctos
-from starlette.middleware.httpsredirect import HTTPSRedirectMiddleware
- 
 
 app = FastAPI()
 # Añadir el middleware para redireccionar HTTP a HTTPS
