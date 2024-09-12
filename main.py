@@ -5,8 +5,7 @@ from database import alumnos  # Importar el diccionario alumnos
 from functions.iniciarSesion import iniciarSesion  # Asegúrate de que el nombre del archivo y la importación sean correctos
 
 app = FastAPI()
-# Añadir el middleware para redireccionar HTTP a HTTPS
-app.add_middleware(HTTPSRedirectMiddleware)
+
 # Habilitar CORS para permitir solicitudes desde cualquier origen
 app.add_middleware(
     CORSMiddleware,
